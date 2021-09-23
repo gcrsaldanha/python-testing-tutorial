@@ -180,3 +180,48 @@ Ao executar nosso arquivo de testes, devemos obter o seguinte `AssertionError`:
 > AssertionError: 'Lista de Tarefas' not found in 'The install worked successfully! Congratulations!'
 
 Muito bem, temos um **teste falhando**, agora podemos desenvolver parte da nossa aplicação para que esse teste passe! Por isso é chamado de desenvolvimento orientado a testes!
+
+
+## Criando nossa página inicial
+
+Primeiro, precisamos criar nossa aplicação:
+
+```bash
+python manage.py startapp listas
+```
+
+Com esse comando, o Django vai criar uma pasta `listas` dentro do nosso projeto (`listadetarefas`) contendo alguns arquivos: models, views, e... testes.
+
+Ao contrário do nosso arquivo `test.py` que executamos manualmente (`python test.py`), o arquivo do Django é executando pelo próprio `test runner` do Django. Vamos verificar que ele realmente está sendo executado:
+
+```python
+from django.test import TestCase
+
+
+class TestDummy(TestCase):
+    def test_fails(self):
+        self.assertEqual(1 + 1, 3)
+
+    def test_passes(self):
+        self.assertTrue(True)
+```
+
+Agora, para executar esse teste com o `test runner` do Django, basta executar
+
+```bash
+python manage.py test
+```
+! Observe que não executamos o nosso arquivo diretamente, mas sim o script `test` através do módulo `manage.py` do Django.
+
+Um teste deve passar e outro deve falhar:
+> AssertionError: 2 != 3.
+
+Ótimo, o test runner do Django está funcionando como esperado!
+
+
+
+
+
+
+
+- [ ] Unit tests vs functional tests
