@@ -2,7 +2,7 @@
 
 Esse tutorial é baseado no livro [TDD com Python](https://amzn.to/2XM31f9) de Harry Percival, editora novatec.
 
-## Configurando o ambiente
+# Configurando o ambiente
 
 * Python3+
 * Virtualenv
@@ -19,7 +19,9 @@ pip install -r requirements.txt
 ```
 
 
-## Escrevendo nosso primeiro teste
+# Escrevendo nosso primeiro teste
+
+## Utilizando o Selenium
 
 - [ ] TODO: Adicionar exemplo com Firefox
 - [ ] TODO: Adicionar exemplo com MacOS
@@ -73,7 +75,7 @@ browser = webdriver.Chrome(
 - [ ] COMMIT: Ambiente configurado e primeiro teste escrito.
 
 
-### Rodando nosso servidor
+## Rodando nosso servidor
 
 Verifique que você está na raíz do projeto (`python-testing-tutorial/`) e execute no terminal:
 ```bash
@@ -104,4 +106,77 @@ assert 'django' in browser.find_element_by_tag_name('header').text
 ```
 
 
-## Configurando a suíte de testes
+# Configurando a suíte de testes
+
+# unittest
+
+Testes geralmente possuem três etapas:
+1. Configuração (`setup`): onde configuramos o cenário para a execução do teste, no nosso caso, criamos uma instância do navegador. Em outros casos, poderíamos criar um arquivo de texto ou instâncias no banco de dados para o nosso caso de teste.
+2. `Assertion`: execução de um trecho de código e verificar (`assert`) que o resultado é o esperado.
+3. Finalização (`teardown/cleanup`): encerrar recursos, no nosso caso, encerrar a janela do Chrome. Poderia ser fechar um arquivo de texto e excluí-lo, ou resetar o banco de dados.
+
+Não queremos fazer esses passos para todo caso de teste que escrevermos. Para resolver isso, vamos utilizar o módulo `unittest` do Python.
+
+Nossos teste agora ficará assim:
+
+```python
+import unittest  # Faz parte da biblioteca padrão do Python3
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        options = Options()
+        options.binary_location = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+        self.browser = webdriver.Chrome(
+            executable_path='./venv/chromedriver.exe',
+            options=options,
+        )
+
+    def tearDown(self):
+      self.browser.quit()
+
+    def test_case(self):
+      self.browser.get('http://localhost:8000')
+      header_text = self.browser.find_element_by_tag_name('header').text
+      self.assertIn('django', header_text)
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+Agora para casa novo caso de teste, a gente só precisa escrever um novo método `test_meu_novo_caso`.
+
+Com a nossa suíte de testes configurada, podemos finalmente começar a desenvolver, ou melhor, testar!
+
+
+## Nosso primeiro teste funcional: acessando a página inicial
+
+Toda aplicação, por mais simples que seja, tem o que chamamos de Histórias de Usuário (ou User Stories). Elas são uma maneira de descrever funcionalidades que o sistema deve possuir através de uma história com um usuário fictício. Por exemplo:
+
+> Alice acessa a página inicial da Lista de Tarefas pela primeira vez. Ela é recebida com uma página contendo um cabeçalho "Lista de Tarefas", um campo textual para escrever a primeira tarefa e um botão de enviar ao lado. Ao escrever "Escrever um teste" e clicar no botão, Alice percebe que um novo item apareceu logo abaixo do campo textual, contendo a tarefa que ela escreveru.
+
+Essa é uma história que descreve a **funcionalidade da nossa aplicação para um novo visitante**.
+
+Mas o que isso tem a ver com testes, você pode se perguntar. *User Stories* são facilmente traduzidas em *testes funcionais*, como o nome já diz, testes que vão verificar que as funcionalidades da nossa aplicação estão funcionando como esperado.
+
+Por exemplo:
+>  Alice acessa a página inicial da Lista de Tarefas pela primeira vez. Ela é recebida com uma página contendo um cabeçalho "Lista de Tarefas"
+
+Pode ser traduzido como:
+
+```python
+def test_novo_visitante(self):
+    self.browser.get('http://localhost:8000')  # Acessa a página inicial da aplicação
+
+    text_cabeçalho = self.browser.find_element_by_tag_name('h1').text
+    self.assertIn('Lista de Tarefas', text_cabeçalho)
+```
+
+Ao executar nosso arquivo de testes, devemos obter o seguinte `AssertionError`:
+
+> AssertionError: 'Lista de Tarefas' not found in 'The install worked successfully! Congratulations!'
+
+Muito bem, temos um **teste falhando**, agora podemos desenvolver parte da nossa aplicação para que esse teste passe! Por isso é chamado de desenvolvimento orientado a testes!
