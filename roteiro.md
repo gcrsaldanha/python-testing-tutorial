@@ -182,7 +182,7 @@ Ao executar nosso arquivo de testes, devemos obter o seguinte `AssertionError`:
 Muito bem, temos um **teste falhando**, agora podemos desenvolver parte da nossa aplicação para que esse teste passe! Por isso é chamado de desenvolvimento orientado a testes!
 
 
-## Criando nossa página inicial
+## Criando nossa aplicação
 
 Primeiro, precisamos criar nossa aplicação:
 
@@ -219,9 +219,60 @@ Um teste deve passar e outro deve falhar:
 Ótimo, o test runner do Django está funcionando como esperado!
 
 
+## Criando nossa página inicial
+
+### Revisão Django
+
+MVC: Model - View - Controller vs MVT: Model - View - Template
+
+Arquitetura básica de Request/Response do Django:
+* Request chega em uma determinada url: `http://localhost:8000/` (raíz)
+* É resolvida para `view` que está associada à essa URL (`/`) (geralmente uma função)
+* `view` retorna uma `Response`
+
+Assim, precisamos verificar 2 coisas (testes):
+1. Acessar a URL `/` envia o `request` para a view correta (página inicial).
+2. A `view` executada retorna a página inicial (HTML) esperada.
 
 
+```python
+# tests.py
+class PaginaInicialTest(TestCase):
+    def test_root_url_resolve_para_home_page_view(self):
+        view = resolve('/')
 
+        self.assertEqual(view.func, home_page)
+```
+> ImportError: cannot import name 'home_page' from 'listas.views' (C:\Users\gabri\Repositories\python-testing-tutorial\listadetarefas\listas\views.py)
+
+```python
+# views.py
+home_page = None
+```
+> django.urls.exceptions.Resolver404: {'tried': [[<URLResolver <URLPattern list> (admin:admin) 'admin/'>]], 'path': ''}
+
+```python
+from listas.views import home_page
+
+urlpatterns = [
+    path('', home_page),
+]
+```
+> TypeError: view must be a callable or a list/tuple in the case of include().
+
+> P.S.: Ao executar a primeira vez com `path('/', home_page)`, eu recebi o seguinte erro: `(urls.W002) Your URL pattern '/' has a route beginning with a '/'. Remove this slash as it is unnecessary.`.
+Trocar `'/'` por `''` resolveu a warning e o teste passou (view foi resolvida).
+
+## (WIP) Teste unitário vs Teste funcional
+
+Até o momento estávamos pensando em testes funcionais: que verificam que determinada funcionalidade da aplicação está se comportando como esperado, **do ponto de vista do usuário**.
+
+Também existe o que chamamos de **testes unitários** (*unit tests*): eles testam que a **lógica interna da aplicação** funciona como esperado.
+
+Nem sempre a linha entre esses dois conceitos é muito clara, mas em linhas gerais:
+* Testes funcionais são mais abrangentes, testam funcionalidades da perspectiva do usuário.
+* Testes unitários são mais específicos, testam componenentes individuais da perspectiva do próprio código.
+* Caixa fechada vs caixa aberta
 
 
 - [ ] Unit tests vs functional tests
