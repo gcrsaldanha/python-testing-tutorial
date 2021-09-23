@@ -22,6 +22,7 @@ pip install -r requirements.txt
 ## Escrevendo nosso primeiro teste
 
 - [ ] TODO: Adicionar exemplo com Firefox
+- [ ] TODO: Adicionar exemplo com MacOS
 
 ```python
 # Utilizando Google Chrome (chromedriver)

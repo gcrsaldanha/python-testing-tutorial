@@ -9,4 +9,8 @@ browser = webdriver.Chrome(
     options=options,
 )
 browser.get('http://localhost:8000')
-assert 'django' in browser.find_element_by_tag_name('header').text
+
+header_text = browser.find_element_by_tag_name('header').text
+assert 'django' in header_text
+
+browser.quit()
