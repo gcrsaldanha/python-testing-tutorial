@@ -24,7 +24,8 @@ pip install -r requirements.txt
 ## Utilizando o Selenium
 
 - [ ] TODO: Adicionar exemplo com Firefox
-- [ ] TODO: Adicionar exemplo com MacOS
+- [x] TODO: Adicionar exemplo com MacOS
+    Para MacOS: basta instalar com `pip install chromedriver` e funciona normalmente.
 
 ```python
 # Utilizando Google Chrome (chromedriver)

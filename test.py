@@ -5,11 +5,14 @@ from selenium.webdriver.chrome.options import Options
 
 class Test(unittest.TestCase):
     def setUp(self):
-        options = Options()
-        options.binary_location = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+        # options = Options()
+        # options.binary_location = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+        # Para MacOS, não precisei dessa configuração:
+        # options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+        # Mas também funciona passando manualmente o Google Chrome e o chromedriver
         self.browser = webdriver.Chrome(
-            executable_path='./venv/chromedriver.exe',
-            options=options,
+            # executable_path='./venv/chromedriver.exe',
+            # options=options,
         )
 
     def tearDown(self):
