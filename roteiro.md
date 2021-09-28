@@ -23,7 +23,6 @@ pip install -r requirements.txt
 
 ## Utilizando o Selenium
 
-- [ ] TODO: Adicionar exemplo com Firefox
 - [x] TODO: Adicionar exemplo com MacOS
     Para MacOS: basta instalar com `pip install chromedriver` e funciona normalmente.
 
@@ -261,8 +260,60 @@ urlpatterns = [
 ```
 > TypeError: view must be a callable or a list/tuple in the case of include().
 
-> P.S.: Ao executar a primeira vez com `path('/', home_page)`, eu recebi o seguinte erro: `(urls.W002) Your URL pattern '/' has a route beginning with a '/'. Remove this slash as it is unnecessary.`.
-Trocar `'/'` por `''` resolveu a warning e o teste passou (view foi resolvida).
+Precisamos que nossa `home_page` seja um `callable` (função).
+
+```python
+def home_page():
+    pass
+```
+
+> TypeError: home_page() takes 0 positional arguments but 1 was given
+
+```python
+def home_page(request):
+    pass
+```
+
+A partir daqui, o primeiro teste deve passar e o segundo falhar.
+
+> AttributeError: 'NoneType' object has no attribute 'content'
+
+```python
+def home_page(request):
+    return HttpResponse()
+```
+
+> AssertionError: '<title>Lista de Tarefas</title>' not found in ''
+
+Finalmente!
+
+```python
+# Test
+def test_home_page_view_retorna_html_correto(self):
+    request = HttpRequest()
+    response = home_page(request)
+    html = response.content.decode('utf8')
+    self.assertIn('<title>Lista de Tarefas</title>', html)
+    self.assertIn('<h1>Lista de Tarefas</h1>', html)
+
+# Implementação
+def home_page(request):
+    return HttpResponse('''
+    <html>
+        <title>Lista de Tarefas</title>
+        <h1>Lista de Tarefas</h1>
+    </html>
+    ''')
+```
+
+
+
+
+
+
+
+
+
 
 ## (WIP) Teste unitário vs Teste funcional
 
